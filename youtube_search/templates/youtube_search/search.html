@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video Search</title>
+    <style>
+        /* styles.css */
+
+        /* Add some styling to the search form */
+        .search-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-form input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-form input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Add some styling to the search results */
+        .search-results {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .search-results li {
+            width: 50%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .search-results h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .search-results p {
+            color: #777;
+        }
+
+        .search-results .video-player {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            position: relative;
+        }
+
+        .search-results .video-player iframe {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .search-results .favorite-button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-results .favorite-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>YouTube Video Search</h1>
+    <div class="search-form">
+        <form method="GET" action="{% url 'search_videos' %}">
+            <input type="text" name="q" placeholder="Search videos...">
+            <input type="submit" value="Search">
+        </form>
+    </div>
+
+    <h2>Search Results</h2>
+    <ul class="search-results">
+        {% for video in videos %}
+        <li>
+            <h3>{{ video.title }}</h3>
+            <div class="video-player">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video.video_id }}" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <p>{{ video.description }}</p>
+            <button class="favorite-button" data-video-id="{{ video.video_id }}">Favorite</button>
+        </li>
+        {% empty %}
+        <li>No videos found.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.favorite-button').click(function () {
+                const videoId = $(this).data('video-id');
+                const button = $(this);
+
+                // Send AJAX request to add or remove favorite
+                $.ajax({
+                    url: '/favorite-video/',
+                    type: 'POST',
+                    data: {
+                        'video_id': videoId
+                    },
+                    success: function (response) {
+                        // Update button appearance or perform other actions
+                        if (response.is_favorite) {
+                            // Video was added to favorites
+                            button.text('Remove from Favorites');
+                        } else {
+                            // Video was removed from favorites
+                            button.text('Favorite');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
