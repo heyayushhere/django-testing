@@ -1,0 +1,51 @@
+<!-- task_create.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Task</title>
+    <style>
+        /* Add some styling to the create task form */
+        .create-task-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .create-task-form input[type="text"],
+        .create-task-form textarea,
+        .create-task-form select {
+            padding: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .create-task-form input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .create-task-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create Task</h1>
+    <div class="create-task-form">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Create">
+        </form>
+    </div>
+</body>
+</html>

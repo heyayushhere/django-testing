@@ -1,11 +1,13 @@
 from django.shortcuts import render, HttpResponse
 from googleapiclient.discovery import build
 from django.conf import settings
-from .models import Video, FavoriteVideo
+from .models import Video, FavoriteVideo,Playlist
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
+from .models import Task
+
 
 def register(request):
     if request.method == 'POST':
@@ -73,3 +75,52 @@ def favorite_video(request):
         return HttpResponse(status=200)
     else:
         return HttpResponse(status=400)
+
+def add_to_playlist(request, video_id):
+    playlist, created = Playlist.objects.get_or_create(user=request.user)
+    video = Video.objects.get(video_id=video_id)
+    playlist.videos.add(video)
+    return redirect('my_playlist')
+
+
+
+def my_playlist(request):
+    playlist = Playlist.objects.filter(user=request.user).first()  # Retrieve the user's playlist
+    context = {'playlist': playlist}
+    return render(request, 'youtube_search/my_playlist.html', context)
+
+from django.shortcuts import render, redirect
+from .forms import TaskForm
+
+
+def task_list(request):
+    tasks = Task.objects.filter(user=request.user)
+    return render(request, 'youtube_search/task_list.html', {'tasks': tasks})
+
+def create_task(request):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm()
+    return render(request, 'youtube_search/create_task.html', {'form': form})
+
+def update_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'youtube_search/update_task.html', {'form': form, 'task': task})
+
+def delete_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    task.delete()
+    return redirect('youtube_search/task_list')

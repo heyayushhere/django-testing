@@ -108,7 +108,8 @@
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video.video_id }}" frameborder="0" allowfullscreen></iframe>
             </div>
             <p>{{ video.description }}</p>
-            <button class="favorite-button" data-video-id="{{ video.video_id }}">Favorite</button>
+            <!-- <button class="favorite-button" data-video-id="{{ video.video_id }}">Favorite</button> -->
+            <button class="favorite-button" data-video-id="{{ video.video_id }}">Add to Playlist</button>
         </li>
         {% empty %}
         <li>No videos found.</li>
@@ -119,31 +120,28 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            $('.favorite-button').click(function () {
-                const videoId = $(this).data('video-id');
-                const button = $(this);
+ $(document).ready(function () {
+    $('.favorite-button').click(function () {
+        const videoId = $(this).data('video-id');
+        const button = $(this);
 
-                // Send AJAX request to add or remove favorite
-                $.ajax({
-                    url: '/favorite-video/',
-                    type: 'POST',
-                    data: {
-                        'video_id': videoId
-                    },
-                    success: function (response) {
-                        // Update button appearance or perform other actions
-                        if (response.is_favorite) {
-                            // Video was added to favorites
-                            button.text('Remove from Favorites');
-                        } else {
-                            // Video was removed from favorites
-                            button.text('Favorite');
-                        }
-                    }
-                });
-            });
+        // Send AJAX request to add video to playlist
+        $.ajax({
+            url: '/add-to-playlist/' + videoId + '/',
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                // Update button appearance or perform other actions
+                button.text('Added to Playlist');
+                button.prop('disabled', true);
+            }
         });
+    });
+});
+
+
     </script>
 </body>
 </html>

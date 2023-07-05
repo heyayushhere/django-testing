@@ -1,0 +1,49 @@
+<!-- task_list.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task List</title>
+    <style>
+        /* Add some styling to the task list */
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .task-list li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .task-list .task-title {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .task-list .task-description {
+            color: #777;
+        }
+        
+        .task-list .task-due-date {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task List</h1>
+    <ul class="task-list">
+        {% for task in tasks %}
+        <li>
+            <h3 class="task-title">{{ task.title }}</h3>
+            <p class="task-description">{{ task.description }}</p>
+            <p class="task-due-date">Due Date: {{ task.due_date }}</p>
+        </li>
+        {% empty %}
+        <li>No tasks found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
