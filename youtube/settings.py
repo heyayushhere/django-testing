@@ -70,7 +70,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'youtube.wsgi.application'
 
-YOUTUBE_API_KEY = 'AIzaSyCPh9ac1rXnQy7S-LCcsv1PcG8VS_6l_vs'
+YOUTUBE_API_KEY = 'put_yours'
 
 
 
